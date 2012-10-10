@@ -9,7 +9,7 @@ class Rules
   end
 
   def self.winner? players
-    
+    Rules.winner(players).any?
   end
 
 end
