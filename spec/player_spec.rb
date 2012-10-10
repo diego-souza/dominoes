@@ -57,4 +57,57 @@ describe Player do
       player.hand.should =~ []
     end
   end
+
+  describe "doubles" do
+    it "should return all stones that are doubles" do
+      double_stone = stub(:double? => true)
+      regular_stone = stub(:double? => false)
+      stones = [double_stone, regular_stone]
+      player = Player.new
+      player.receive_stones stones
+      player.doubles.should == [double_stone]
+    end
+
+    it "should return empty array if none stones are doubles" do
+      double_stone = stub(:double? => false)
+      regular_stone = stub(:double? => false)
+      stones = [double_stone, regular_stone]
+      player = Player.new
+      player.receive_stones stones
+      player.doubles.should == []
+    end
+  end
+
+  describe "has_double?" do
+    it "should be true if any of its stones is double" do
+      stones = [stub(:double? => false), stub(:double? => true)]
+      player = Player.new
+      player.receive_stones stones
+      player.has_double?.should be_true
+    end
+
+    it "should be false if none of its stones is double" do
+      stones = [stub(:double? => false), stub(:double? => false)]
+      player = Player.new
+      player.receive_stones stones
+      player.has_double?.should be_false
+    end
+  end
+
+  describe "max_double" do
+    it "should return -1 if has no doubles" do
+      stones = [stub(:double? => false), stub(:double? => false)]
+      player = Player.new
+      player.receive_stones stones
+      player.max_double.should == -1
+    end
+
+    it "should return biggest number of doubles if has doubles" do
+      stones = [stub(:double? => true, :first_number => 1, :second_number => 1), stub(:double? => true, :first_number => 2, :second_number => 2)]
+      player = Player.new
+      player.receive_stones stones
+      player.max_double.should == 2
+    end
+  end
+
 end
