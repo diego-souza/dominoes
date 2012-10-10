@@ -16,18 +16,32 @@ describe Rules do
     end
   end
 
-  describe "winner?" do
-    it "should return true if anybody has empty hand" do
+  describe "winner" do
+    it "should return player if has empty hand" do
       first_player = stub(:hand => [])
       second_player = stub(:hand => [stub])
       players = [first_player, second_player]
-      Rules.winner?(players).should be_true
+      Rules.winner(players).should == first_player
     end
 
-    it "should return false if no one has empty hand" do
+    it "should return nil if no one has empty hand" do
       first_player = stub(:hand => [stub])
       second_player = stub(:hand => [stub])
       players = [first_player, second_player]
+      Rules.winner(players).should == nil
+    end
+  end
+
+  describe "winner?" do
+    it "should return true if has winner" do
+      players = stub
+      Rules.should_receive(:winner).with(players).and_return([stub])
+      Rules.winner?(players).should be_true
+    end
+
+    it "should return false if has no winner" do
+      players = stub
+      Rules.should_receive(:winner).with(players).and_return([])
       Rules.winner?(players).should be_false
     end
   end

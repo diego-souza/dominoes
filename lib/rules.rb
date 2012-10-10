@@ -4,7 +4,12 @@ class Rules
     player.max_double == -1 ? nil:player
   end
 
-  def self.winner? players
-    players.dup.delete_if{|p| p.hand.any?}.any?
+  def self.winner players
+    players.dup.delete_if{|p| p.hand.any?}.first
   end
+
+  def self.winner? players
+    
+  end
+
 end
