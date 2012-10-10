@@ -19,18 +19,10 @@ class Player
   end
 
   def has_double?
-    @hand.each do |stone|
-      return true if stone.double?
-    end
-    false
+    self.doubles.any?
   end
 
   def max_double
-    doubles = self.doubles
-    if doubles.any?
-      self.doubles.map{|s| s.first_number}.max
-    else
-      -1
-    end
+    self.doubles.map{|s| s.first_number}.max || -1
   end
 end
