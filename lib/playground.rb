@@ -1,4 +1,4 @@
-require 'exceptions/cant_play_stone'
+require_relative 'exceptions/cant_play_stone'
 class Playground
   attr_reader :area
   def initialize
