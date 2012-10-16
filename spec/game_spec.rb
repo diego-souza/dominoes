@@ -64,4 +64,65 @@ describe Game do
       game.players.last.hand.size.should == 7
     end
   end
+
+  describe "playing" do
+    before(:each) do
+      @game = Game.new :players => ["diego", "hugo"]
+      @next_player = stub
+      Rules.stub(:next_player => @next_player)
+    end
+
+    it "current player can play a stone he owns" do
+      stone = stub
+      @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)
+      @game.playground.should_receive(:play_stone).with(stone)
+      @game.current_player.should_receive(:give_stones).with(stone).and_return(false)
+      lambda { @game.play stone }.should_not raise_error PlayerDoesNotOwnStone
+      @game.current_player.should == @next_player
+    end
+
+    it "current player can not play a stone he does not owns" do
+      stone = stub
+      @game.current_player.should_receive(:has_stone?).with(stone).and_return(false)
+      @game.playground.should_not_receive(:play_stone).with(stone)
+      @game.current_player.should_not_receive(:give_stones).with(stone).and_return(false)
+      lambda { @game.play stone }.should raise_error PlayerDoesNotOwnStone
+      @game.current_player.should_not == @next_player
+    end
+
+    context "stock is not empty" do
+      before(:each) do
+        @game.stock.should_receive(:empty?).and_return(false)
+      end
+
+      it "current player can buy a stone from stock" do
+        stone = stub
+        @game.stock.should_receive(:first).and_return(stone)
+        @game.current_player.should_receive(:receive_stones).with(stone)
+        lambda { @game.buy }.should_not raise_error StockIsEmpty
+      end
+
+      it "current player can not pass" do
+        lambda { @game.pass }.should raise_error PlayerMustBuyOrPlay
+        @game.current_player.should_not == @next_player
+      end
+    end
+
+    context "stock is empty" do
+      before(:each) do
+        @game.stock.should_receive(:empty?).and_return(true)
+      end
+
+      it "current player can not buy a stone from stock" do
+        @game.stock.should_not_receive(:first)
+        @game.current_player.should_not_receive(:receive_stones)
+        lambda { @game.buy }.should raise_error StockIsEmpty
+      end
+
+      it "current player can pass" do
+        lambda { @game.pass }.should_not raise_error PlayerMustBuyOrPlay
+        @game.current_player.should == @next_player
+      end
+    end
+  end
 end

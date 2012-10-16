@@ -6,12 +6,12 @@ class Player
   end
 
   def receive_stones stones
-    stones = stones.to_a
+    stones = Array(stones)
     @hand += stones
   end
 
   def give_stones stones
-    @hand -= stones.to_a
+    @hand -= Array(stones)
   end
 
   def doubles

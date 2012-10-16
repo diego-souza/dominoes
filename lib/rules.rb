@@ -12,4 +12,7 @@ class Rules
     Rules.winner(players).any?
   end
 
+  def self.next_player players, current_player
+    players[(players.index(current_player)+1) % players.size]
+  end
 end

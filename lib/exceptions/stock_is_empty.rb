@@ -1,0 +1,2 @@
+class StockIsEmpty < Exception
+end

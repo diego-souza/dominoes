@@ -1,0 +1,2 @@
+class PlayerMustBuyOrPlay < Exception
+end

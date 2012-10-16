@@ -1,0 +1,2 @@
+class PlayerDoesNotOwnStone < Exception
+end
