@@ -5,9 +5,6 @@ class Playground
     @area = []
   end
 
-  def edges
-  end
-
   def play_stone stone, edge = :last
     if @area.empty? 
       if stone.double?
