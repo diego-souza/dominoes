@@ -1,0 +1,2 @@
+class NotEnoughPlayers < Exception
+end
