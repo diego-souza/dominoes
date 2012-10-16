@@ -1,4 +1,4 @@
-require 'game'
+require 'dominoes/game'
 describe Game do
 
   describe "basic attributes" do

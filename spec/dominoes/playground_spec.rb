@@ -1,4 +1,4 @@
-require 'playground'
+require 'dominoes/playground'
 describe Playground do
   it "should have empty area at the beginning" do
     playground = Playground.new

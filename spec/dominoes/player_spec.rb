@@ -1,4 +1,4 @@
-require 'player'
+require 'dominoes/player'
 describe Player do
   describe "basic attributes" do
     it "should have a name" do

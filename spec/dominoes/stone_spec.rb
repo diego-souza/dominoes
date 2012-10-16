@@ -1,4 +1,4 @@
-require 'stone'
+require 'dominoes/stone'
 describe Stone do
   it "should have two numbers" do
     stone = Stone.new 1, 2

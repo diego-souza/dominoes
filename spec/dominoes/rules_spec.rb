@@ -1,4 +1,4 @@
-require 'rules'
+require 'dominoes/rules'
 describe Rules do
   describe "player_with_bigest_double" do
     it "should return player with biggest double" do
