@@ -8,4 +8,8 @@ class Stone
   def double?
     @first_number == @second_number
   end
+
+  def matches? number
+    @first_number == number || @second_number == number
+  end
 end

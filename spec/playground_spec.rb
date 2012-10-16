@@ -14,7 +14,14 @@ describe Playground do
       playground.area.should == [6, 6]
     end
 
-    context "when there is a 6/6 stone players" do
+    it "should raise error if first stone is not double" do
+      stone = stub(:double? => false) 
+      playground = Playground.new
+      lambda {playground.play_stone stone, :right}.should raise_error CantPlayStone
+      playground.area.should == []
+    end
+
+    context "when there is a first stone played" do
       before(:each) do
         stone = stub(:double? => true, 
                      :first_number => 6,
@@ -22,54 +29,38 @@ describe Playground do
         @playground = Playground.new
         @playground.play_stone stone
       end
-      it "should accept second stone if first_number matches edges" do
-        second_stone = stub(:first_number => 6,
-                            :second_number => 1)
-        @playground.play_stone second_stone, :right
-        @playground.area.should == [6, 6, 6, 1]
+      context "last edge" do
+        it "should accept if stone matches the edges with first number" do
+          stone = stub(:matches? => true,
+                       :first_number => 6,
+                       :second_number => 5)
+          @playground.play_stone stone, :last
+          @playground.area.should == [6, 6, 6, 5]
+        end
+        it "should accept if stone matches the edges with second number" do
+          stone = stub(:matches? => true,
+                       :first_number => 5,
+                       :second_number => 6)
+          @playground.play_stone stone, :last
+          @playground.area.should == [6, 6, 6, 5]
+        end
       end
 
-      it "should accept second stone if second_number matches edges" do
-        second_stone = stub(:first_number => 1,
-                            :second_number => 6)
-        @playground.play_stone second_stone, :right
-        @playground.area.should == [6, 6, 6, 1]
-      end
-
-      it "should raise error if no number matches edges" do
-        second_stone = stub(:first_number => 1,
-                            :second_number => 1)
-        lambda {@playground.play_stone second_stone, :right}.should raise_error CantPlayStone
-        @playground.area.should == [6, 6]
-      end
-
-      context "and there is a 6/1 stone played" do
-        before(:each) do
-          second_stone = stub(:first_number => 1,
-                              :second_number => 1)
-          @playground.play_stone second_stone
+      context "first edge" do
+        it "should accept if stone matches the edges with first number" do
+          stone = stub(:matches? => true,
+                       :first_number => 6,
+                       :second_number => 5)
+          @playground.play_stone stone, :first
+          @playground.area.should == [5, 6, 6, 6]
         end
-
-        it "should play stone wherever it can be placed for first number" do
-          third_stone = stub(:first_number => 6,
-                             :second_number => 2)
-          @playground.play_stone third_stone
+        it "should accept if stone matches the edges with second number" do
+          stone = stub(:matches? => true,
+                       :first_number => 5,
+                       :second_number => 6)
+          @playground.play_stone stone, :first
+          @playground.area.should == [5, 6, 6, 6]
         end
-
-        it "should play stone wherever it can be placed for second number" do
-          third_stone = stub(:first_number => 2,
-                             :second_number => 6)
-          @playground.play_stone third_stone
-        end
-
-        it "should play in right if told" do
-          
-        end
-
-        it "should play in left if told" do
-          
-        end
-
       end
     end
   end

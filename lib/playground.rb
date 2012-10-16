@@ -5,14 +5,27 @@ class Playground
     @area = []
   end
 
-  def play_stone stone, edge = :right
-    if @area.empty?
-      @area += [stone.first_number, stone.second_number]
-    else
-      if @area.last == stone.first_number
+  def edges
+  end
+
+  def play_stone stone, edge = :last
+    if @area.empty? 
+      if stone.double?
         @area += [stone.first_number, stone.second_number]
-      elsif @area.last == stone.second_number
-        @area += [stone.second_number, stone.first_number]
+      else
+        raise CantPlayStone
+      end
+    else
+      edge_value = self.area.send(edge)
+      if stone.matches? edge_value
+        other_value = stone.first_number == edge_value ? stone.second_number : stone.first_number
+        if edge == :last
+          stone_array = [edge_value, other_value]
+          @area += stone_array.uniq
+        else
+          stone_array = [other_value, edge_value]
+          @area = stone_array.uniq + @area
+        end
       end
     end
   end

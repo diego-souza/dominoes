@@ -17,4 +17,17 @@ describe Stone do
       stone.double?.should be_false
     end
   end
+
+  describe "matches?" do
+    subject { Stone.new 1, 2 }
+
+    it "should match something equal its numbers" do
+      subject.matches?(1).should be_true
+      subject.matches?(2).should be_true
+    end
+
+    it "should not match something not equal its numbers" do
+      subject.matches?(3).should be_false
+    end
+  end
 end
