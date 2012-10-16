@@ -1,0 +1,2 @@
+class CantPlayStone < Exception
+end
