@@ -25,4 +25,8 @@ class Player
   def max_double
     self.doubles.map{|s| s.first_number}.max || -1
   end
+
+  def has_stone? stone
+    self.hand.include? stone
+  end
 end

@@ -110,4 +110,23 @@ describe Player do
     end
   end
 
+  describe "has_stone?" do
+    it "should return true if has stone" do
+      stone = stub
+      stones = [stone]
+      player = Player.new
+      player.receive_stones stones
+      player.has_stone?(stone).should == true
+    end
+
+    it "should return false if does not have stone" do
+      stone = stub
+      another_stone = stub
+      stones = [another_stone]
+      player = Player.new
+      player.receive_stones stones
+      player.has_stone?(stone).should == false
+    end
+  end
+
 end

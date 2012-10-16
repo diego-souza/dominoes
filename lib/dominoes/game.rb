@@ -14,6 +14,7 @@ class Game
   def initialize params = {}
     while @current_player == nil
       @players = []
+      @playground = Playground.new
       @stock = []
       BASIC_STONES.shuffle.each do |stone_values|
         @stock << Stone.new(stone_values.first, stone_values.last)
