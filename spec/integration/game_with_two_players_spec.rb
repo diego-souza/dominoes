@@ -27,6 +27,19 @@ describe "Game with two players" do
       @game.current_player.name.should == @current_player_name
     end
 
+    it "current player plays stone that does not match" do
+      @game.play @game.current_player.doubles.last
+      possible_stones = @game.current_player.hand.dup
+      edges = [@game.playground.area.first, @game.playground.area.last]
+      possible_stones.delete_if{|s| edges.include?(s.first_number) || edges.include?(s.second_number)}
+      old_playground_area = @game.playground.area
+      old_current_player_name = @game.current_player.name
+
+      lambda {@game.play possible_stones.first}.should raise_error CantPlayStone
+      @game.current_player.name.should == old_current_player_name
+      @game.playground.area.should == old_playground_area 
+    end
+
     it "current player buys all stones" do
       old_stock = @game.stock.dup
       old_hand = @game.current_player.hand

@@ -23,6 +23,8 @@ class Playground
           stone_array = [other_value, edge_value]
           @area = stone_array + @area
         end
+      else
+        raise CantPlayStone
       end
     end
   end

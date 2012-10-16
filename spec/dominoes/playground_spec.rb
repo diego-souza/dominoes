@@ -62,6 +62,14 @@ describe Playground do
           @playground.area.should == [5, 6, 6, 6]
         end
       end
+
+      context "does not match" do
+        it "should raise error and not play stone" do
+          stone = stub(:matches? => false)
+          lambda { @playground.play_stone stone, :first }.should raise_error CantPlayStone
+          @playground.area.should == [6, 6]
+        end
+      end
     end
   end
 end
