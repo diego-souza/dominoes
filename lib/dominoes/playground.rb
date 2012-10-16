@@ -18,10 +18,10 @@ class Playground
         other_value = stone.first_number == edge_value ? stone.second_number : stone.first_number
         if edge == :last
           stone_array = [edge_value, other_value]
-          @area += stone_array.uniq
+          @area += stone_array
         else
           stone_array = [other_value, edge_value]
-          @area = stone_array.uniq + @area
+          @area = stone_array + @area
         end
       end
     end

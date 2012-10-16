@@ -29,9 +29,9 @@ class Game
     end
   end
 
-  def play stone
+  def play stone, edge = :last
     raise PlayerDoesNotOwnStone unless @current_player.has_stone? stone
-    @playground.play_stone stone
+    @playground.play_stone stone, edge
     @current_player.give_stones stone
     @current_player = Rules.next_player @players, @current_player
   end
@@ -43,6 +43,6 @@ class Game
 
   def buy
     raise StockIsEmpty if @stock.empty?
-    @current_player.receive_stones @stock.first
+    @current_player.receive_stones @stock.shift
   end
 end

@@ -75,9 +75,19 @@ describe Game do
     it "current player can play a stone he owns" do
       stone = stub
       @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)
-      @game.playground.should_receive(:play_stone).with(stone)
+      @game.playground.should_receive(:play_stone).with(stone, anything())
       @game.current_player.should_receive(:give_stones).with(stone).and_return(false)
       lambda { @game.play stone }.should_not raise_error PlayerDoesNotOwnStone
+      @game.current_player.should == @next_player
+    end
+
+    it "current player can play a stone he owns" do
+      stone = stub
+      edge = stub
+      @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)
+      @game.playground.should_receive(:play_stone).with(stone, edge)
+      @game.current_player.should_receive(:give_stones).with(stone).and_return(false)
+      lambda { @game.play stone, edge }.should_not raise_error PlayerDoesNotOwnStone
       @game.current_player.should == @next_player
     end
 
@@ -97,7 +107,7 @@ describe Game do
 
       it "current player can buy a stone from stock" do
         stone = stub
-        @game.stock.should_receive(:first).and_return(stone)
+        @game.stock.should_receive(:shift).and_return(stone)
         @game.current_player.should_receive(:receive_stones).with(stone)
         lambda { @game.buy }.should_not raise_error StockIsEmpty
       end
@@ -114,7 +124,7 @@ describe Game do
       end
 
       it "current player can not buy a stone from stock" do
-        @game.stock.should_not_receive(:first)
+        @game.stock.should_not_receive(:shift)
         @game.current_player.should_not_receive(:receive_stones)
         lambda { @game.buy }.should raise_error StockIsEmpty
       end
