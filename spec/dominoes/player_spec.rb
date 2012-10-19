@@ -129,4 +129,29 @@ describe Player do
     end
   end
 
+  describe "has_matching_stone?" do
+    it "should be false if stones in hand do not match any argument" do
+      number = stub
+      stone = mock
+      stone.should_receive(:matches?).with(number).and_return(false)
+      stones = [stone]
+      player = Player.new
+      player.receive_stones stones
+      player.has_matching_stone?(number).should == false
+    end
+
+    it "should be true if any stone in hand match any argument" do
+      number = stub
+      matching_stone = mock
+      stone = mock
+      matching_stone.should_receive(:matches?).with(number).and_return(true)
+      stone.should_receive(:matches?).with(number).and_return(false)
+      stones = [stone, matching_stone]
+      player = Player.new
+      player.receive_stones stones
+      player.has_matching_stone?(number).should == true
+    end
+
+  end
+
 end
