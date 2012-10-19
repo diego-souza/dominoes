@@ -81,7 +81,7 @@ describe Game do
       @game.current_player.should == @next_player
     end
 
-    it "current player can play a stone he owns" do
+    it "current player can play a stone he owns on specific edge" do
       stone = stub
       edge = stub
       @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)

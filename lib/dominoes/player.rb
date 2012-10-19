@@ -29,4 +29,11 @@ class Player
   def has_stone? stone
     self.hand.include? stone
   end
+
+  def has_matching_stone? number
+    @hand.each do |stone|
+      return true if stone.matches?(number)
+    end
+    false
+  end
 end
