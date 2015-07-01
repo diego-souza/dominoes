@@ -69,7 +69,7 @@ describe Game do
     before(:each) do
       @game = Game.new :players => ["diego", "hugo"]
       @next_player = double
-      Rules.stub(:next_player => @next_player)
+      allow(Rules).to receive_messages(:next_player => @next_player)
     end
 
     it "current player can play a stone he owns" do

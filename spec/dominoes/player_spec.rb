@@ -22,7 +22,7 @@ describe Player do
     it "should add stone to player's hand" do
       player = Player.new
       stone = double
-      stone.stub(:to_a => [stone])
+      allow(stone).to receive_messages(:to_a => [stone])
       player.receive_stones stone
       expect(player.hand).to eq([stone])
     end
@@ -41,7 +41,7 @@ describe Player do
     it "should remove stone from player's hand" do
       player = Player.new
       stone = double
-      stone.stub(:to_a => [stone])
+      allow(stone).to receive_messages(:to_a => [stone])
       player.receive_stones [stone]
       player.give_stones stone
       expect(player.hand).to eq([])

@@ -95,12 +95,12 @@ describe Rules do
         end
 
         it "should be false when game is not stuck" do
-          Rules.stub(:stuck? => false)
+          allow(Rules).to receive_messages(:stuck? => false)
           expect(Rules.game_over?(@players, @stock, @edges)).to be_falsey
         end
 
         it "should be true when game is stuck" do
-          Rules.stub(:stuck? => true)
+          allow(Rules).to receive_messages(:stuck? => true)
           expect(Rules.game_over?(@players, @stock, @edges)).to be_truthy
         end
       end
