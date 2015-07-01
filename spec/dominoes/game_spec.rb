@@ -95,7 +95,7 @@ describe Game do
       stone = stub
       @game.current_player.should_receive(:has_stone?).with(stone).and_return(false)
       @game.playground.should_not_receive(:play_stone).with(stone)
-      @game.current_player.should_not_receive(:give_stones).with(stone).and_return(false)
+      @game.current_player.should_not_receive(:give_stones).with(stone)
       lambda { @game.play stone }.should raise_error PlayerDoesNotOwnStone
       @game.current_player.should_not == @next_player
     end
