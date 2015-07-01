@@ -9,12 +9,12 @@ describe Stone do
   describe "double?" do
     it "should be true if both numbers are the same" do
       stone = Stone.new 1, 1
-      stone.double?.should be_true
+      expect(stone.double?).to be_truthy
     end
 
     it "should be false if both numbers are not the same" do
       stone = Stone.new 1, 2
-      stone.double?.should be_false
+      expect(stone.double?).to be_falsey
     end
   end
 
@@ -22,12 +22,12 @@ describe Stone do
     subject { Stone.new 1, 2 }
 
     it "should match something equal its numbers" do
-      subject.matches?(1).should be_true
-      subject.matches?(2).should be_true
+      expect(subject.matches?(1)).to be_truthy
+      expect(subject.matches?(2)).to be_truthy
     end
 
     it "should not match something not equal its numbers" do
-      subject.matches?(3).should be_false
+      expect(subject.matches?(3)).to be_falsey
     end
   end
 end

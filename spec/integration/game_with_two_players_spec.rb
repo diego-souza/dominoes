@@ -9,22 +9,22 @@ describe "Game with two players" do
     end
 
     it "its players should have the names indicated" do
-      @game.players.map{|p| p.name}.should =~ @players 
+      expect(@game.players.map{|p| p.name}).to match_array(@players) 
     end
 
     it "current player plays a stone" do
       stone = @game.current_player.doubles.last
       @game.play stone
-      @game.playground.area.should == [stone.first_number, stone.second_number]
+      expect(@game.playground.area).to eq([stone.first_number, stone.second_number])
       new_current_player_name = @game.current_player.name
-      @players.should =~ [@current_player_name, new_current_player_name]
+      expect(@players).to match_array([@current_player_name, new_current_player_name])
     end
 
     it "current player plays stone he does not own" do
       stone = @game.stock.first
-      lambda {@game.play stone}.should raise_error PlayerDoesNotOwnStone
-      @game.playground.area.should == []
-      @game.current_player.name.should == @current_player_name
+      expect {@game.play stone}.to raise_error PlayerDoesNotOwnStone
+      expect(@game.playground.area).to eq([])
+      expect(@game.current_player.name).to eq(@current_player_name)
     end
 
     it "current player plays stone that does not match" do
@@ -35,9 +35,9 @@ describe "Game with two players" do
       old_playground_area = @game.playground.area
       old_current_player_name = @game.current_player.name
 
-      lambda {@game.play possible_stones.first}.should raise_error CantPlayStone
-      @game.current_player.name.should == old_current_player_name
-      @game.playground.area.should == old_playground_area 
+      expect {@game.play possible_stones.first}.to raise_error CantPlayStone
+      expect(@game.current_player.name).to eq(old_current_player_name)
+      expect(@game.playground.area).to eq(old_playground_area) 
     end
 
     it "current player buys all stones" do
@@ -46,12 +46,12 @@ describe "Game with two players" do
       @game.stock.size.times do
         @game.buy
       end
-      @game.stock.should be_empty
-      @game.current_player.hand.should =~ old_stock + old_hand
+      expect(@game.stock).to be_empty
+      expect(@game.current_player.hand).to match_array(old_stock + old_hand)
     end
 
     it "current player passes" do
-      lambda { @game.pass }.should raise_error PlayerMustBuyOrPlay
+      expect { @game.pass }.to raise_error PlayerMustBuyOrPlay
     end
 
     it "current player buys all stones and passes" do
@@ -59,16 +59,16 @@ describe "Game with two players" do
         @game.buy
       end
       @game.pass
-      @game.playground.area.should == []
+      expect(@game.playground.area).to eq([])
       new_current_player_name = @game.current_player.name
-      @players.should =~ [@current_player_name, new_current_player_name]
+      expect(@players).to match_array([@current_player_name, new_current_player_name])
     end
 
     it "current player buys all stones and buy another" do
       @game.stock.size.times do
         @game.buy
       end
-      lambda { @game.buy }.should raise_error StockIsEmpty
+      expect { @game.buy }.to raise_error StockIsEmpty
     end
   end
 
@@ -76,7 +76,7 @@ describe "Game with two players" do
     before(:each) do
       @players = ["Diego", "Hugo"]
       basic_stones = (0..6).to_a.repeated_combination(2).to_a
-      Game::BASIC_STONES.should_receive(:shuffle).and_return(basic_stones.dup) 
+      expect(Game::BASIC_STONES).to receive(:shuffle).and_return(basic_stones.dup) 
       # Diego [[3, 6], [4, 4], [4, 5], [4, 6], [5, 5], [5, 6], [6, 6]]
       # Hugo  [[2, 3], [2, 4], [2, 5], [2, 6], [3, 3], [3, 4], [3, 5]]
       @diegos_hand = basic_stones.pop(7)
@@ -87,14 +87,14 @@ describe "Game with two players" do
 
     it "checking game setup" do
       diego = @game.current_player
-      diego.name.should == "Diego"
+      expect(diego.name).to eq("Diego")
       diego.hand.each do |stone|
-        @diegos_hand.should include [stone.first_number, stone.second_number]
+        expect(@diegos_hand).to include [stone.first_number, stone.second_number]
       end
       hugo = (@game.players - [@game.current_player]).first
-      hugo.name.should == "Hugo"
+      expect(hugo.name).to eq("Hugo")
       hugo.hand.each do |stone|
-        @hugos_hand.should include [stone.first_number, stone.second_number]
+        expect(@hugos_hand).to include [stone.first_number, stone.second_number]
       end
     end
 
@@ -107,7 +107,7 @@ describe "Game with two players" do
       end
 
       it "playground area should have only one stone" do
-        @game.playground.area.should == [6, 6]
+        expect(@game.playground.area).to eq([6, 6])
       end
 
       context "Second player plays - Hugo plays [2,6]" do
@@ -119,7 +119,7 @@ describe "Game with two players" do
         end
 
         it "playground area should have two stones" do
-          @game.playground.area.should == [6, 6, 6, 2]
+          expect(@game.playground.area).to eq([6, 6, 6, 2])
         end
 
         context "First player plays second time - Diego plays [5,6] on left" do
@@ -131,7 +131,7 @@ describe "Game with two players" do
           end
 
           it "playground area should have two stones" do
-            @game.playground.area.should == [5, 6, 6, 6, 6, 2]
+            expect(@game.playground.area).to eq([5, 6, 6, 6, 6, 2])
           end
 
           context "Playing a double stone" do
@@ -140,13 +140,13 @@ describe "Game with two players" do
               # Hugo  [[2, 3], [2, 4], [2, 5], [3, 3], [3, 4], [3, 5]]
               stone = @game.current_player.hand[2]
               @game.play stone, :last
-              @game.playground.area.should == [5, 6, 6, 6, 6, 2, 2, 5]
+              expect(@game.playground.area).to eq([5, 6, 6, 6, 6, 2, 2, 5])
 
               # Diego [[3, 6], [4, 4], [4, 5], [4, 6], [5, 5]]
               # Hugo  [[2, 3], [2, 4], [3, 3], [3, 4], [3, 5]]
               stone = @game.current_player.hand.last
               @game.play stone, :last
-              @game.playground.area.should == [5, 6, 6, 6, 6, 2, 2, 5, 5, 5]
+              expect(@game.playground.area).to eq([5, 6, 6, 6, 6, 2, 2, 5, 5, 5])
             end
           end
 

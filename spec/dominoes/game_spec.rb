@@ -12,126 +12,126 @@ describe Game do
     end
 
     it "should have players" do
-      @game.should respond_to :players
+      expect(@game).to respond_to :players
     end
 
     it "should have current player" do
-      @game.should respond_to :current_player
+      expect(@game).to respond_to :current_player
     end
 
     it "should have a stock" do
-      @game.should respond_to :stock
+      expect(@game).to respond_to :stock
     end
 
     it "should have a board" do
-      @game.should respond_to :playground
+      expect(@game).to respond_to :playground
     end
 
     it "must have at least 2 players" do
       players = []
-      lambda { Game.new :players => players }.should raise_error NotEnoughPlayers
+      expect { Game.new :players => players }.to raise_error NotEnoughPlayers
       players = ["diego"]
-      lambda { Game.new :players => players }.should raise_error NotEnoughPlayers
+      expect { Game.new :players => players }.to raise_error NotEnoughPlayers
       players = ["diego", "hugo"]
-      lambda { Game.new :players => players }.should_not raise_error NotEnoughPlayers
+      expect { Game.new :players => players }.not_to raise_error
       game = Game.new :players => players
-      game.players.map{|p| p.name}.should == players
+      expect(game.players.map{|p| p.name}).to eq(players)
     end
   end
 
   describe "setup" do
     it "should distribute seven stones to each player" do
       game = Game.new :players => ["diego", "hugo"]
-      game.players.first.hand.size.should == 7
-      game.players.last.hand.size.should == 7
+      expect(game.players.first.hand.size).to eq(7)
+      expect(game.players.last.hand.size).to eq(7)
     end
 
     it "should assign player with bigest double to current player" do
-      diego = stub(:name => "Diego")
-      Rules.should_receive(:player_with_bigest_double).and_return(diego)
+      diego = double(:name => "Diego")
+      expect(Rules).to receive(:player_with_bigest_double).and_return(diego)
       game = Game.new :players => ["diego", "hugo"]
-      game.current_player.should == diego
+      expect(game.current_player).to eq(diego)
     end
 
     it "should should redistribute stones if no one has doubles" do
-      diego = stub(:name => "Diego")
-      Rules.should_receive(:player_with_bigest_double).once.and_return(nil)
-      Rules.should_receive(:player_with_bigest_double).once.and_return(diego)
+      diego = double(:name => "Diego")
+      expect(Rules).to receive(:player_with_bigest_double).once.and_return(nil)
+      expect(Rules).to receive(:player_with_bigest_double).once.and_return(diego)
       game = Game.new :players => ["diego", "hugo"]
-      game.current_player.should == diego
-      game.stock.size.should == 14
-      game.players.first.hand.size.should == 7
-      game.players.last.hand.size.should == 7
+      expect(game.current_player).to eq(diego)
+      expect(game.stock.size).to eq(14)
+      expect(game.players.first.hand.size).to eq(7)
+      expect(game.players.last.hand.size).to eq(7)
     end
   end
 
   describe "playing" do
     before(:each) do
       @game = Game.new :players => ["diego", "hugo"]
-      @next_player = stub
-      Rules.stub(:next_player => @next_player)
+      @next_player = double
+      allow(Rules).to receive_messages(:next_player => @next_player)
     end
 
     it "current player can play a stone he owns" do
-      stone = stub
-      @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)
-      @game.playground.should_receive(:play_stone).with(stone, anything())
-      @game.current_player.should_receive(:give_stones).with(stone).and_return(false)
-      lambda { @game.play stone }.should_not raise_error PlayerDoesNotOwnStone
-      @game.current_player.should == @next_player
+      stone = double
+      expect(@game.current_player).to receive(:has_stone?).with(stone).and_return(true)
+      expect(@game.playground).to receive(:play_stone).with(stone, anything())
+      expect(@game.current_player).to receive(:give_stones).with(stone).and_return(false)
+      expect { @game.play stone }.not_to raise_error
+      expect(@game.current_player).to eq(@next_player)
     end
 
     it "current player can play a stone he owns on specific edge" do
-      stone = stub
-      edge = stub
-      @game.current_player.should_receive(:has_stone?).with(stone).and_return(true)
-      @game.playground.should_receive(:play_stone).with(stone, edge)
-      @game.current_player.should_receive(:give_stones).with(stone).and_return(false)
-      lambda { @game.play stone, edge }.should_not raise_error PlayerDoesNotOwnStone
-      @game.current_player.should == @next_player
+      stone = double
+      edge = double
+      expect(@game.current_player).to receive(:has_stone?).with(stone).and_return(true)
+      expect(@game.playground).to receive(:play_stone).with(stone, edge)
+      expect(@game.current_player).to receive(:give_stones).with(stone).and_return(false)
+      expect { @game.play stone, edge }.not_to raise_error
+      expect(@game.current_player).to eq(@next_player)
     end
 
     it "current player can not play a stone he does not owns" do
-      stone = stub
-      @game.current_player.should_receive(:has_stone?).with(stone).and_return(false)
-      @game.playground.should_not_receive(:play_stone).with(stone)
-      @game.current_player.should_not_receive(:give_stones).with(stone).and_return(false)
-      lambda { @game.play stone }.should raise_error PlayerDoesNotOwnStone
-      @game.current_player.should_not == @next_player
+      stone = double
+      expect(@game.current_player).to receive(:has_stone?).with(stone).and_return(false)
+      expect(@game.playground).not_to receive(:play_stone).with(stone)
+      expect(@game.current_player).not_to receive(:give_stones).with(stone)
+      expect { @game.play stone }.to raise_error PlayerDoesNotOwnStone
+      expect(@game.current_player).not_to eq(@next_player)
     end
 
     context "stock is not empty" do
       before(:each) do
-        @game.stock.should_receive(:empty?).and_return(false)
+        expect(@game.stock).to receive(:empty?).and_return(false)
       end
 
       it "current player can buy a stone from stock" do
-        stone = stub
-        @game.stock.should_receive(:shift).and_return(stone)
-        @game.current_player.should_receive(:receive_stones).with(stone)
-        lambda { @game.buy }.should_not raise_error StockIsEmpty
+        stone = double
+        expect(@game.stock).to receive(:shift).and_return(stone)
+        expect(@game.current_player).to receive(:receive_stones).with(stone)
+        expect { @game.buy }.not_to raise_error
       end
 
       it "current player can not pass" do
-        lambda { @game.pass }.should raise_error PlayerMustBuyOrPlay
-        @game.current_player.should_not == @next_player
+        expect { @game.pass }.to raise_error PlayerMustBuyOrPlay
+        expect(@game.current_player).not_to eq(@next_player)
       end
     end
 
     context "stock is empty" do
       before(:each) do
-        @game.stock.should_receive(:empty?).and_return(true)
+        expect(@game.stock).to receive(:empty?).and_return(true)
       end
 
       it "current player can not buy a stone from stock" do
-        @game.stock.should_not_receive(:shift)
-        @game.current_player.should_not_receive(:receive_stones)
-        lambda { @game.buy }.should raise_error StockIsEmpty
+        expect(@game.stock).not_to receive(:shift)
+        expect(@game.current_player).not_to receive(:receive_stones)
+        expect { @game.buy }.to raise_error StockIsEmpty
       end
 
       it "current player can pass" do
-        lambda { @game.pass }.should_not raise_error PlayerMustBuyOrPlay
-        @game.current_player.should == @next_player
+        expect { @game.pass }.not_to raise_error
+        expect(@game.current_player).to eq(@next_player)
       end
     end
   end
